@@ -13,6 +13,7 @@ The HikuruPassport contract, developed by Hikuru Labs, is an advanced implementa
 - **Referral System**: Introduces a referral mechanism, rewarding users for inviting new participants and expanding the network.
 
 ### Key Functions
+![image](https://github.com/HikuruOfficial/hikuru-passport/assets/132744928/1638b632-8f77-4aa8-b2c2-3dba348dbbe3)
 
 - **Minting**: Offers two minting functions, one standard and one with referral rewards, facilitating the creation of new digital passports while incentivizing community growth.
 - **User Type Determination**: Analyzes user scores to categorize participants into different tiers, such as "sybil," "human," and "crypto enthusiast," enriching the ecosystem's dynamics.
