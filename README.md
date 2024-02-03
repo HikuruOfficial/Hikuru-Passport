@@ -28,6 +28,23 @@ Ensuring the highest standards of security and governance, the contract employs 
 
 The HikuruPassport contract represents a sophisticated blend of technology and strategy, aimed at creating a secure, scalable, and engaging digital passport ecosystem. By combining ERC1155's efficiency, Ownable's security, and ERC1155Supply's clarity, alongside innovative features like the referral system, Hikuru Labs sets a new standard for blockchain-based digital identities.
 
+### Deployment and Verification
+`npx hardhat run scripts/deploy.ts --network blast_sepolia`
+
+Compiled 14 Solidity files successfully.
+Deploying Hikuru Passport...
+Deployer:  0x4d052115975db4a43D7471fa6E08696D4c0355A4
+Hikuru Passport contract deployed to:  0xC4267e8a35281c30028752E69aAED43b34C3B539
+
+`npx hardhat verify --network blast_sepolia --constructor-args args.js 0xC4267e8a35281c30028752E69aAED43b34C3B539`
+
+Successfully submitted source code for contract
+contracts/HikuruPassportV2.sol:HikuruPassport at 0xC4267e8a35281c30028752E69aAED43b34C3B539
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract HikuruPassport on the block explorer.
+https://testnet.blastscan.io/address/0xC4267e8a35281c30028752E69aAED43b34C3B539#code
+
 ---
 
 This description aims to provide a comprehensive overview of the HikuruPassport contract's purpose, functionality, and technical specifications, making it accessible to both technical and non-technical stakeholders.
