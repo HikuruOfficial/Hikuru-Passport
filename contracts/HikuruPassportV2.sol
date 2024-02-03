@@ -8,6 +8,55 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
 
+enum YieldMode {
+    AUTOMATIC,
+    VOID,
+    CLAIMABLE
+}
+
+enum GasMode {
+    VOID,
+    CLAIMABLE 
+}
+
+// interface for Blast Feature
+interface IBlast{
+    // configure
+    function configureContract(address contractAddress, YieldMode _yield, GasMode gasMode, address governor) external;
+    function configure(YieldMode _yield, GasMode gasMode, address governor) external;
+
+    // base configuration options
+    function configureClaimableYield() external;
+    function configureClaimableYieldOnBehalf(address contractAddress) external;
+    function configureAutomaticYield() external;
+    function configureAutomaticYieldOnBehalf(address contractAddress) external;
+    function configureVoidYield() external;
+    function configureVoidYieldOnBehalf(address contractAddress) external;
+    function configureClaimableGas() external;
+    function configureClaimableGasOnBehalf(address contractAddress) external;
+    function configureVoidGas() external;
+    function configureVoidGasOnBehalf(address contractAddress) external;
+    function configureGovernor(address _governor) external;
+    function configureGovernorOnBehalf(address _newGovernor, address contractAddress) external;
+
+    // claim yield
+    function claimYield(address contractAddress, address recipientOfYield, uint256 amount) external returns (uint256);
+    function claimAllYield(address contractAddress, address recipientOfYield) external returns (uint256);
+
+    // claim gas
+    function claimAllGas(address contractAddress, address recipientOfGas) external returns (uint256);
+    function claimGasAtMinClaimRate(address contractAddress, address recipientOfGas, uint256 minClaimRateBips) external returns (uint256);
+    function claimMaxGas(address contractAddress, address recipientOfGas) external returns (uint256);
+    function claimGas(address contractAddress, address recipientOfGas, uint256 gasToClaim, uint256 gasSecondsToConsume) external returns (uint256);
+
+    // read functions
+    function readClaimableYield(address contractAddress) external view returns (uint256);
+    function readYieldConfiguration(address contractAddress) external view returns (uint8);
+    function readGasParams(address contractAddress) external view returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, GasMode);
+}
+
+
+
 // HikuruPassport contract definition, inheriting from ERC1155, Ownable, and ERC1155Supply
 contract HikuruPassport is ERC1155, Ownable, ERC1155Supply {
      // State variables
@@ -24,6 +73,8 @@ contract HikuruPassport is ERC1155, Ownable, ERC1155Supply {
     mapping(address => uint256) public referralsInviteCount; // Mapping to track how many reff invited
 
 
+    IBlast public constant BLAST = IBlast(0x4300000000000000000000000000000000000002);
+
 
     // Modifier that checks that the caller is one of the owners
     // Modifier that checks that the caller is one of the owners
@@ -36,6 +87,9 @@ contract HikuruPassport is ERC1155, Ownable, ERC1155Supply {
     constructor(address initialOwner, address _hikuruPiggyBank) ERC1155("") Ownable(initialOwner) {
         isOwner[initialOwner] = true;
         hikuruPiggyBank = _hikuruPiggyBank;
+
+        BLAST.configureClaimableYield();
+        BLAST.configureClaimableGas(); 
     }
 
     // Function to mint new NFTs
@@ -155,5 +209,16 @@ contract HikuruPassport is ERC1155, Ownable, ERC1155Supply {
         override(ERC1155, ERC1155Supply)
     {
         super._update(from, to, ids, values);
+    }
+
+
+    function claimAllYield(address recipient) external onlyHikuruOwner {
+        // allow only the owner to claim the yield
+        BLAST.claimAllYield(address(this), hikuruPiggyBank);
+    }
+
+    function claimMyContractsGas() external onlyHikuruOwner {
+        // allow only the owner to claim the gas
+        BLAST.claimAllGas(address(this), hikuruPiggyBank);
     }
 }
